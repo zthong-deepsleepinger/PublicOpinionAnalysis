@@ -1,0 +1,106 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+<script src="../static/js/jquery.min.js" type="text/javascript" charset='utf-8'></script>
+
+<script type="text/javascript">
+    // 初始化界面
+    $(function () {
+        $('#li_1').attr('class', '');
+        $('#li_2').attr('class', '');
+        $('#li_3').attr('class', '');
+        $('#li_4').attr('class', '');
+
+        // 判断是否登录
+        $.get('http://127.0.0.1:5000/check_login', {},
+            function (data) {
+                console.log(data);
+                if (data['login'] === false) {
+                    $('#show_login_reg').show();
+                    $('#index_img').css('height', '71%');
+                }
+                else {
+                    window.location.href = '/weibo_hot_rank'
+                }
+            }
+        );
+
+        $("#reg_submit").click(function () {
+            const name = $("#name").val();
+            const password = $("#password").val();
+
+            console.log(name);
+            console.log(password);
+
+            if ((name === undefined) || (password === undefined) || (name === '') || (password === '')) {
+                alert('字段不能为空！');
+                return
+            }
+
+            // 获取时间
+            $.get('http://127.0.0.1:5000/register/' + name + '/' + password, {},
+                function (data) {
+                    alert(data['info'])
+                }
+            );
+        });
+
+        $("#login_submit").click(function () {
+            const name = $("#name").val();
+            const password = $("#password").val();
+
+            console.log(name);
+            console.log(password);
+
+            if ((name === undefined) || (password === undefined) || (name === '') || (password === '')) {
+                alert('login_submit字段不能为空！');
+                return
+            }
+
+            // 获取时间
+            $.get('http://127.0.0.1:5000/login/' + name + '/' + password, {},
+                function (data) {
+                    alert(data['info']);
+                    if (data['status'] == 'ok') {
+                        window.location.href = "/"
+                    }
+                }
+            );
+        });
+
+    });
+</script>
+
+<div class="container">
+
+    <!-- Main component for a primary marketing message or call to action -->
+    <div class="jumbotron" id="show_login_reg">
+        <div style="height: 150px;">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>基于python的网络舆情信息爬取及实现系统</h4>
+                    <p style="font-size: 18px;">利用网络爬虫技术从网易新闻爬取新闻数据，并进行版块分类，对某篇话题的新闻进行中文分词，
+                        保留表征能力强名词和动词，统计词频，把词频最大的几个做为该话题的标题，同时对新闻进行词云统计和词群分析，实现舆情信息挖掘。</p>
+                </div>
+                <div class="col-lg-6" style="font-size: 18px;">
+                    <h4>注册/登录</h4>
+                    <p><span style="font-size: 18px;">用户名：</span><input id="name" style="width: 70%;" type="text"></p>
+                    <p><span style="font-size: 18px;">密&nbsp;&nbsp;&nbsp;码：</span><input id="password" type="password" style="width: 70%;"></p>
+                    <p>
+                        <button class="btn btn-primary" id="reg_submit">注册&raquo;</button>
+                        <button class="btn btn-primary" id="login_submit">登录&raquo;</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="">
+        <div class="col-sm-12">
+            <img src="https://cdn.pixabay.com/photo/2021/09/26/08/41/lantern-6656783_1280.jpg"
+                 style="width: 100%;" id="index_img">
+        </div>
+    </div>
+</div>
+
+{% endblock %}
